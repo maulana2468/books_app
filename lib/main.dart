@@ -1,9 +1,14 @@
 import 'package:book_app/ui/login_screen.dart';
 import 'package:book_app/ui/main_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+import 'data/shared_pref.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await SharedPrefs.init();
+
   runApp(const MyApp());
 }
 
@@ -15,27 +20,20 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String? token;
+  // final someString = SharedPrefs.instance.getString('someString') ?? 'defaultValue';
+  // await SharedPrefs.instance.setBool('someBool', true);
 
-  @override
-  void initState() {
-    super.initState();
-    getToken();
-  }
-
-  void getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString("TOKEN_APP");
-  }
+  final token = SharedPrefs.instance.getString("TOKEN_APP");
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Books App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: (token == null) ? const LoginScreen() : const MainMenu(),
+      home: (token == null) ? const LoginScreen() : MainMenu(),
     );
   }
 }
